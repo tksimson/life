@@ -12,3 +12,6 @@ frontend/dist/
 # Editor / OS
 .DS_Store
 *.log
+
+# Runtime pids/logs
+.run/

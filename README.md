@@ -10,7 +10,19 @@ web/mobile/desktop clients with no data-model rewrite.
 - **Backend:** Django 6.0 + Django REST Framework, SQLite (→ Postgres in the cloud later).
 - **Frontend:** React 19 + TypeScript + Vite, Tailwind CSS v4, Framer Motion, TanStack Query.
 
-## Run it (two terminals)
+## Run it
+
+```bash
+scripts/up.sh     # start everything → http://localhost:5173
+scripts/down.sh   # stop everything
+```
+
+`up.sh` is idempotent and handles all first-run setup itself (venv, pip install,
+npm install, migrate, seed). Logs go to `.run/backend.log` and `.run/frontend.log`.
+Open http://localhost:5173 — first run asks for your name + birth date, then shows
+the journal.
+
+<details><summary>Manual (two terminals)</summary>
 
 **Backend** (port 8000):
 
@@ -30,8 +42,7 @@ cd frontend
 npm install          # first time only
 npm run dev
 ```
-
-Open http://localhost:5173 — first run asks for your name + birth date, then shows the journal.
+</details>
 
 ## Tests
 
