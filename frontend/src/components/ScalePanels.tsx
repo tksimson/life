@@ -89,10 +89,10 @@ export function ScalePanels() {
       <h2 className="px-4 pt-6 pb-2 text-sm font-semibold tracking-wide text-neutral-400">
         Goals
       </h2>
-      <PeriodPanel scale="week" title="Weeks" initial={8} step={8} />
-      <PeriodPanel scale="month" title="Months" initial={6} step={6} />
-      <PeriodPanel scale="year" title="Years" initial={5} step={5} />
-      <PeriodPanel scale="decade" title="Decades" initial={3} step={3} />
+      <PeriodPanel scale="week" title="Weeks" initial={7} step={8} />
+      <PeriodPanel scale="month" title="Months" initial={5} step={6} />
+      <PeriodPanel scale="year" title="Years" initial={3} step={5} />
+      <PeriodPanel scale="decade" title="Decades" initial={2} step={3} />
     </div>
   )
 }
