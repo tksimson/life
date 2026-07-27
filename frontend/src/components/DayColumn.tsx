@@ -38,14 +38,24 @@ export function DayColumn({ birthDate }: Props) {
           onSave={onSave}
         />
       ))}
-      {visible < allMonths.length && (
-        <button
-          onClick={() => setVisible((v) => v + STEP)}
-          className="mx-2 mb-8 rounded-md border border-neutral-800 px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:bg-white/[0.04] hover:text-neutral-200"
-        >
-          Show earlier months
-        </button>
-      )}
+      <div className="mx-2 mb-8 flex gap-2">
+        {visible < allMonths.length && (
+          <button
+            onClick={() => setVisible((v) => v + STEP)}
+            className="rounded-md border border-neutral-800 px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:bg-white/[0.04] hover:text-neutral-200"
+          >
+            Show earlier months
+          </button>
+        )}
+        {visible > INITIAL && (
+          <button
+            onClick={() => setVisible((v) => Math.max(INITIAL, v - STEP))}
+            className="rounded-md border border-neutral-800 px-3 py-1.5 text-xs text-neutral-400 transition-colors hover:bg-white/[0.04] hover:text-neutral-200"
+          >
+            Show fewer
+          </button>
+        )}
+      </div>
     </div>
   )
 }

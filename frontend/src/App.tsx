@@ -1,3 +1,5 @@
+import { useState } from 'react'
+
 import { DayColumn } from './components/DayColumn'
 import { Onboarding } from './components/Onboarding'
 import { ScalePanels } from './components/ScalePanels'
@@ -5,6 +7,9 @@ import { useProfile } from './hooks/useProfile'
 
 function App() {
   const { data: profile, isLoading } = useProfile()
+  // On narrow screens only one pane fits, so we fold to a single active pane.
+  // On wide screens (lg+) both show side by side and this toggle is hidden.
+  const [active, setActive] = useState<'days' | 'goals'>('days')
 
   if (isLoading) {
     return (
@@ -24,10 +29,28 @@ function App() {
       <header className="flex items-baseline gap-3 border-b border-neutral-800/60 px-5 py-3">
         <span className="text-lg font-light tracking-tight text-neutral-100">life</span>
         <span className="text-xs text-neutral-600">{profile.name}</span>
+        <nav className="ml-auto flex gap-4 text-xs lg:hidden">
+          <button
+            onClick={() => setActive('days')}
+            className={active === 'days' ? 'text-neutral-200' : 'text-neutral-600'}
+          >
+            Days
+          </button>
+          <button
+            onClick={() => setActive('goals')}
+            className={active === 'goals' ? 'text-neutral-200' : 'text-neutral-600'}
+          >
+            Goals
+          </button>
+        </nav>
       </header>
-      <main className="grid min-h-0 flex-1 grid-cols-[minmax(0,1fr)_minmax(0,1fr)] divide-x divide-neutral-800/60">
-        <DayColumn birthDate={profile.birth_date} />
-        <ScalePanels birthDate={profile.birth_date} />
+      <main className="grid min-h-0 flex-1 grid-cols-1 divide-neutral-800/60 lg:grid-cols-2 lg:divide-x">
+        <div className={`min-h-0 overflow-hidden ${active === 'days' ? '' : 'hidden'} lg:block`}>
+          <DayColumn birthDate={profile.birth_date} />
+        </div>
+        <div className={`min-h-0 overflow-hidden ${active === 'goals' ? '' : 'hidden'} lg:block`}>
+          <ScalePanels birthDate={profile.birth_date} />
+        </div>
       </main>
     </div>
   )
