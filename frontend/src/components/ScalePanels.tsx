@@ -3,26 +3,25 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 import type { Scale } from '../api/types'
 import { useEntries, useUpsertEntry } from '../hooks/useEntries'
-import { iso, parseISO, periodsBack } from '../lib/dates'
+import { iso, periodsForward } from '../lib/dates'
 import { EntryLine } from './EntryLine'
 
 interface PanelProps {
   scale: Scale
   title: string
-  birthDate: string
   initial: number
   step: number
   defaultOpen?: boolean
 }
 
-function PeriodPanel({ scale, title, birthDate, initial, step, defaultOpen }: PanelProps) {
+function PeriodPanel({ scale, title, initial, step, defaultOpen }: PanelProps) {
   const [open, setOpen] = useState(defaultOpen ?? true)
   const [visible, setVisible] = useState(initial)
   const { byAnchor } = useEntries(scale)
   const upsert = useUpsertEntry()
 
-  const all = periodsBack(scale, parseISO(birthDate), new Date())
-  const periods = all.slice(0, visible)
+  // Goals look forward: current period at top, future below.
+  const periods = periodsForward(scale, new Date(), visible)
 
   return (
     <section className="border-b border-neutral-800/60">
@@ -59,14 +58,12 @@ function PeriodPanel({ scale, title, birthDate, initial, step, defaultOpen }: Pa
                 />
               ))}
               <div className="mx-2 mt-2 flex gap-4 text-xs">
-                {visible < all.length && (
-                  <button
-                    onClick={() => setVisible((v) => v + step)}
-                    className="text-neutral-500 transition-colors hover:text-neutral-300"
-                  >
-                    Show more
-                  </button>
-                )}
+                <button
+                  onClick={() => setVisible((v) => v + step)}
+                  className="text-neutral-500 transition-colors hover:text-neutral-300"
+                >
+                  Show more
+                </button>
                 {visible > initial && (
                   <button
                     onClick={() => setVisible((v) => Math.max(initial, v - step))}
@@ -84,22 +81,18 @@ function PeriodPanel({ scale, title, birthDate, initial, step, defaultOpen }: Pa
   )
 }
 
-interface Props {
-  birthDate: string
-}
-
-// RIGHT pane: goals per week / month / year / decade. One free line each
-// (write them as "1/ … 2/ … 3/ …"), stacked and collapsible.
-export function ScalePanels({ birthDate }: Props) {
+// RIGHT pane: goals per week / month / year / decade, looking forward from now.
+// One free line each (write them as "1/ … 2/ … 3/ …"), stacked and collapsible.
+export function ScalePanels() {
   return (
     <div className="h-full overflow-y-auto">
       <h2 className="px-4 pt-6 pb-2 text-sm font-semibold tracking-wide text-neutral-400">
         Goals
       </h2>
-      <PeriodPanel scale="week" title="Weeks" birthDate={birthDate} initial={12} step={26} />
-      <PeriodPanel scale="month" title="Months" birthDate={birthDate} initial={12} step={24} />
-      <PeriodPanel scale="year" title="Years" birthDate={birthDate} initial={60} step={60} />
-      <PeriodPanel scale="decade" title="Decades" birthDate={birthDate} initial={20} step={20} />
+      <PeriodPanel scale="week" title="Weeks" initial={8} step={8} />
+      <PeriodPanel scale="month" title="Months" initial={6} step={6} />
+      <PeriodPanel scale="year" title="Years" initial={5} step={5} />
+      <PeriodPanel scale="decade" title="Decades" initial={3} step={3} />
     </div>
   )
 }

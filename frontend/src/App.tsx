@@ -49,7 +49,7 @@ function App() {
           <DayColumn birthDate={profile.birth_date} />
         </div>
         <div className={`min-h-0 overflow-hidden ${active === 'goals' ? '' : 'hidden'} lg:block`}>
-          <ScalePanels birthDate={profile.birth_date} />
+          <ScalePanels />
         </div>
       </main>
     </div>

@@ -110,6 +110,39 @@ export function periodsBack(scale: Scale, start: Date, now: Date): Period[] {
   return out
 }
 
+// Period list going FORWARD from the current period into the future — for Goals.
+// Current period first (top), future below. No past, no upper bound but for `count`.
+export function periodsForward(scale: Scale, now: Date, count: number): Period[] {
+  const out: Period[] = []
+  const cursor = anchorFor(scale, now)
+
+  const advance = () => {
+    switch (scale) {
+      case 'week':
+        cursor.setDate(cursor.getDate() + 7)
+        break
+      case 'month':
+        cursor.setMonth(cursor.getMonth() + 1)
+        break
+      case 'year':
+        cursor.setFullYear(cursor.getFullYear() + 1)
+        break
+      case 'decade':
+        cursor.setFullYear(cursor.getFullYear() + 10)
+        break
+      default:
+        cursor.setDate(cursor.getDate() + 1)
+    }
+  }
+
+  for (let i = 0; i < count; i++) {
+    const anchor = anchorFor(scale, cursor)
+    out.push({ key: iso(anchor), label: periodLabel(scale, anchor), date: anchor })
+    advance()
+  }
+  return out
+}
+
 export function periodLabel(scale: Scale, anchor: Date): string {
   switch (scale) {
     case 'week':
