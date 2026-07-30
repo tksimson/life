@@ -6,7 +6,7 @@ import { ScalePanels } from './components/ScalePanels'
 import { useProfile } from './hooks/useProfile'
 
 function App() {
-  const { data: profile, isLoading } = useProfile()
+  const { data: profile, isLoading, isError, refetch } = useProfile()
   // On narrow screens only one pane fits, so we fold to a single active pane.
   // On wide screens (lg+) both show side by side and this toggle is hidden.
   const [active, setActive] = useState<'days' | 'goals'>('days')
@@ -19,7 +19,23 @@ function App() {
     )
   }
 
-  // Onboarding gate: no name or birth date yet.
+  // A failed fetch is not an empty profile. Showing Onboarding here would look
+  // like lost data, and saving the form would overwrite the real profile.
+  if (isError) {
+    return (
+      <div className="flex h-full flex-col items-center justify-center gap-3 text-sm text-neutral-500">
+        <span>Can't reach the backend. Your data is safe.</span>
+        <button
+          onClick={() => refetch()}
+          className="border border-neutral-700 px-3 py-1 text-xs text-neutral-300"
+        >
+          Retry
+        </button>
+      </div>
+    )
+  }
+
+  // Onboarding gate: fetch succeeded and there is no name or birth date yet.
   if (!profile || !profile.name || !profile.birth_date) {
     return <Onboarding />
   }

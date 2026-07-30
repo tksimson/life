@@ -7,6 +7,8 @@ export function useProfile() {
   return useQuery({
     queryKey: ['profile'],
     queryFn: () => api.get<Profile>('/profile/'),
+    // Don't cache a failed fetch as "no profile" — see the gate in App.tsx.
+    retry: 2,
   })
 }
 
